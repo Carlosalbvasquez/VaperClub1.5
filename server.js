@@ -1,45 +1,60 @@
+// =========================================================
+// IMPORTACIONES
+// =========================================================
 const express = require('express');
 const dotenv = require('dotenv');
-const connectDB = require('./config/db');
-const { notFound, errorHandler } = require('./middlewares/errorMiddleware');
-const userRoutes = require('./routes/userRoutes');
-const productRoutes = require('./routes/productRoutes');
-const orderRoutes = require('./routes/orderRoutes');
-const uploadRoutes = require('./routes/uploadRoutes');
 const path = require('path');
 const cors = require('cors');
+const connectDB = require('./config/db');
+const { notFound, errorHandler } = require('./middlewares/errorMiddleware');
 
+// =========================================================
+// CONFIGURACIÓN INICIAL
+// =========================================================
 dotenv.config();
 
 // Conectar a MongoDB
 connectDB();
 
+// Crear app Express
 const app = express();
 
-// Middlewares globales
-app.use(cors());
-app.use(express.json());
+// =========================================================
+// MIDDLEWARES
+// =========================================================
+app.use(cors()); // 🔥 Permite peticiones desde frontend (React)
+app.use(express.json()); // Para leer JSON en body
 app.use(express.urlencoded({ extended: true }));
 
-// Archivos estáticos (uploads)
+// =========================================================
+// RUTAS PRINCIPALES
+// =========================================================
+app.get('/', (req, res) => {
+  res.send('✅ API de VaperClub funcionando correctamente');
+});
+
+// Rutas API
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/products', require('./routes/productRoutes'));
+app.use('/api/orders', require('./routes/orderRoutes'));
+app.use('/api/upload', require('./routes/uploadRoutes'));
+
+// =========================================================
+// ARCHIVOS ESTÁTICOS (uploads y frontend futuro)
+// =========================================================
 const __dirname_custom = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname_custom, '/uploads')));
 
-// Ruta base
-app.get('/', (req, res) => res.send('✅ API VaperClub is running...'));
-
-// Rutas de la API
-app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/upload', uploadRoutes);
-
-// Manejo de errores
+// =========================================================
+// MIDDLEWARES DE ERROR
+// =========================================================
 app.use(notFound);
 app.use(errorHandler);
 
-// Puerto y arranque
+// =========================================================
+// SERVIDOR
+// =========================================================
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  console.log(`🚀 Servidor backend corriendo en modo ${process.env.NODE_ENV || 'development'} en el puerto ${PORT}`);
 });
