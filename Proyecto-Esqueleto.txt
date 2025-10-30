@@ -1,0 +1,34 @@
+vaperclub-ecommerce/
+├── backend/                                  <-- Servidor Node.js / Express / MongoDB
+│   ├── config/
+│   │   └── db.js                             (Conexión a MongoDB)
+│   ├── controllers/
+│   │   ├── userController.js                 (Autenticación, Registro, Perfil)
+│   │   └── productController.js              (Lógica de productos)
+│   ├── middlewares/
+│   │   ├── authMiddleware.js                 (JWT Protection: 'protect' y 'admin')
+│   │   └── errorMiddleware.js                (Manejo de errores 404/500)
+│   ├── models/
+│   │   ├── OrderModel.js                     (Esquema de Pedidos)
+│   │   ├── ProductModel.js                   (Esquema de Productos y Reviews)
+│   │   └── UserModel.js                      (Esquema de Usuarios, cifrado bcrypt)
+│   ├── routes/
+│   │   ├── productRoutes.js                  (GET /api/products)
+│   │   └── userRoutes.js                     (POST /api/users/auth, /register, /profile)
+│   ├── data/
+│   │   ├── products.js
+│   │   └── users.js
+│   ├── utils/
+│   │   └── generateToken.js                  (Generación de JWT y Cookie HTTP-Only)
+│   ├── server.js                             (Punto de entrada de Express)
+│   └── seeder.js                             (Script para poblar/destruir DB)
+├── Front-end/                                <-- Aplicación React / Redux / RTK Query
+│   ├── src/
+│   │   ├── components/                       (Header, Loader, Message, PrivateRoute, etc.)
+│   │   ├── pages/                            (Home, Product, Cart, Login, Register, Profile, etc.)
+│   │   ├── slices/
+│   │   │   ├── authSlice.js                  (Gestión del estado de usuario y credenciales)
+│   │   │   ├── usersApiSlice.js              (RTK Query: Login, Register, Profile Update)
+│   │   │   └── ordersApiSlice.js             (RTK Query: Obtener pedidos, crear orden, etc.)
+│   │   └── store.js                          (Configuración de Redux Store)
+└── package.json

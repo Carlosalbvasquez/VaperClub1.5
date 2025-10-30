@@ -1,0 +1,86 @@
+DOCUMENTACIÓN Y RESUMEN DEL PROYECTO: VAPERCLUB E-COMMERCE API
+============================================================
+Fecha: 29 de Octubre de 2025
+Estado del Proyecto: Back-end Base y Autenticación COMPLETOS
+
+============================================================
+1. ESTRUCTURA DEL PROYECTO (BACK-END)
+============================================================
+El proyecto Node.js/Express está organizado en la carpeta 'backend', utilizando módulos ES6 (import/export).
+
+/backend
+├── config/
+│   └── db.js                       (Conexión a MongoDB)
+├── controllers/
+│   ├── userController.js           (Lógica de Autenticación, Registro, Perfil)
+│   └── productController.js        (Lógica de Productos)
+├── middlewares/
+│   ├── authMiddleware.js           (Seguridad JWT: 'protect' y 'admin')
+│   └── errorMiddleware.js          (Manejo de Errores 404/500)
+├── models/
+│   ├── OrderModel.js               (Esquema de Pedidos)
+│   ├── ProductModel.js             (Esquema de Productos y Reviews)
+│   └── UserModel.js                (Esquema de Usuarios y cifrado bcrypt)
+├── routes/
+│   ├── productRoutes.js            (Rutas de Productos)
+│   └── userRoutes.js               (Rutas de Usuarios: Auth/Perfil)
+├── utils/
+│   └── generateToken.js            (Generación de Token JWT en cookie)
+├── data/
+│   ├── products.js
+│   └── users.js
+├── .env                            (Variables de Entorno: MONGO_URI, JWT_SECRET, etc.)
+├── server.js                       (Punto de entrada de Express)
+└── seeder.js                       (Script de carga y eliminación de datos de prueba)
+
+============================================================
+2. FUNCIONALIDADES IMPLEMENTADAS (LO CREADO)
+============================================================
+
+A. MÓDULO DE AUTENTICACIÓN Y PERFIL
+-----------------------------------
+- Login: POST /api/users/auth. Generación de Token JWT en cookie HTTP-Only.
+- Registro: POST /api/users. Cifrado de contraseña con bcryptjs.
+- Logout: POST /api/users/logout. Limpia la cookie JWT.
+- Perfil: GET/PUT /api/users/profile. Rutas protegidas para obtener y actualizar datos de usuario.
+- Seguridad: Middleware 'protect' para verificar la validez del token JWT en rutas privadas.
+
+B. MÓDULO DE PRODUCTOS
+-----------------------
+- Listado: GET /api/products. Devuelve todos los productos de la DB.
+- Detalle: GET /api/products/:id. Devuelve un producto específico.
+
+C. CORE DEL SERVIDOR
+--------------------
+- Configuración: Servidor Express inicializado con middleware para JSON, URL-encoded y 'cookie-parser'.
+- Base de Datos: Conexión estable a MongoDB usando Mongoose.
+- Seeder: Script funcional para cargar datos iniciales ('data:import') y eliminar datos ('data:destroy').
+
+============================================================
+3. ERRORES DE CONFIGURACIÓN Y SOLUCIONES APLICADAS
+============================================================
+Se resolvieron errores de ejecución relacionados con la configuración de Node.js y npm scripts.
+
+| ERROR | CAUSA | SOLUCIÓN |
+| :--- | :--- | :--- |
+| npm error Missing script: "server" | El script 'server' no estaba definido en 'backend/package.json'. | Se añadió "server": "nodemon server.js" al package.json de la carpeta 'backend'. |
+| Error: Cannot find module 'seeder.js' | Problema de path relativo o mezcla de sintaxis de módulos. | Se verificó que el script fuera "node seeder.js" y que todos los archivos (incluyendo seeder.js) usaran sintaxis ES6 ('import/export') junto con "type": "module" en package.json. |
+| Sintaxis de Módulos | Uso de 'require()' (CommonJS) en archivos mientras 'type: module' estaba activado. | Todos los 'require()' fueron reemplazados por sentencias 'import' para estandarizar el proyecto. |
+
+============================================================
+4. PRÓXIMOS PASOS PENDIENTES (LO FALTANTE)
+============================================================
+Para completar el Back-end y el flujo de la tienda, se deben implementar los siguientes módulos:
+
+1. MÓDULO DE PEDIDOS (ÓRDENES):
+   - Creación de Pedidos: Implementar la ruta POST /api/orders para recibir la orden finalizada del Front-end, calcular precios finales, y guardar la orden.
+   - Detalle de Pedido: Implementar la ruta GET /api/orders/:id.
+
+2. INTEGRACIÓN DE PAGO:
+   - Rutas para actualizar el estado del pedido a 'isPaid: true' (simulación y/o integración con pasarela como PayU/MercadoPago).
+
+3. MÓDULO DE ADMINISTRACIÓN:
+   - Rutas protegidas por 'admin' (middleware) para gestión de:
+     - Usuarios (Listar, Editar, Eliminar).
+     - Productos (Crear, Editar, Eliminar).
+     - Órdenes (Listar todas, Marcar como entregadas).
